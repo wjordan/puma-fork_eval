@@ -52,6 +52,30 @@ While Puma is running, run `fork_eval` with any Ruby code/script you wish to run
 
     fork_eval -e 'ARGV.clear; require "irb"; IRB.start'
 
+## Advanced configuration
+
+### Different user running `puma` server
+
+By default the socket path used to connect the `fork_eval` script to the Puma process
+is in a directory only accessible to the current OS user ([`$XDG_RUNTIME_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables)),
+which means that the Puma server needs to run as the same user as the user running `fork_eval` to connect properly.
+To run `fork_eval` across separate users, set `FORK_EVAL_SOCKET` environment variable to a different path accessible by both users.
+
+### Multiple `puma` servers
+
+Because the default socket path is static, multiple `puma` servers won't be able to start with the `fork_eval` plugin enabled.
+To support multiple servers, set `FORK_EVAL_SOCKET` environment variable to a custom path (e.g., `$XDG_RUNTIME_DIR/fork_eval_2.sock`) when starting
+the Puma server, and set the same custom environment variable when running the `fork_eval` command.
+
+## Security
+
+NOTE: the use of `eval` indicates some security risk.
+Any user with access to the socket can run Ruby code
+that can access a copy of Puma and the loaded application.
+
+The default socket path is in a directory only accessible to the current OS user ([`$XDG_RUNTIME_DIR`](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables)).
+Whether this is secure enough depends on your own environment and security requirements.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
