@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'puma/fork_eval'
 require 'optparse'
 
 code = nil
 OptionParser.new do |o|
-  o.on '-e', "--eval CODE", 'code string to eval' do |c|
+  o.on '-e', '--eval CODE', 'code string to eval' do |c|
     code = c
   end
 end.parse!(ARGV)
